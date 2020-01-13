@@ -23,6 +23,7 @@ func Day2(program []int) []int {
 	return program
 }
 
+// Da2Part2 takes a program a finds the second and third items so the final program has the value of 19690720 in its first position
 func Day2Part2(program []int) (noun, verb int) {
 	for noun = 0; noun < 100; noun++ {
 		for verb = 0; verb < 100; verb++ {
