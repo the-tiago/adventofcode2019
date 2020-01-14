@@ -45,12 +45,74 @@ func Day3(wire1, wire2 string) int {
 	return closestIterception
 }
 
+func Day3Part2(wire1, wire2 string) int {
+	grid := Grid{map[string]Cell{}, map[string]Cell{}}
+	grid.AddWire(wire1, true)
+	grid.AddWire(wire2, false)
+
+	smallerSteps := 0
+	for key, cell := range grid.interceptions {
+		count1 := countStepsUntilCoord(wire1, cell.coords)
+		count2 := countStepsUntilCoord(wire2, cell.coords)
+		steps := count1 + count2
+		fmt.Printf("interception @%s, steps %d\n", key, steps)
+		if smallerSteps == 0 || steps < smallerSteps {
+			smallerSteps = steps
+		}
+	}
+	return smallerSteps
+}
+
 func distance(c1, c2 Coords) int {
 	return int(math.Abs(float64((c2.x - c1.x))) + math.Abs(float64((c2.y - c1.y))))
 }
 
 func (c Coords) HashMap() string {
 	return strconv.Itoa(c.x) + "," + strconv.Itoa(c.y)
+}
+
+func countStepsUntilCoord(wire string, coord Coords) (total int) {
+	wireComponents := strings.Split(wire, ",")
+	x, y := 0, 0
+	for _, s := range wireComponents {
+		direction := s[0:1]
+		count, _ := strconv.Atoi(s[1:])
+		switch direction {
+		case "U":
+			for i := 0; i < count; i++ {
+				y++
+				total++
+				if x == coord.x && y == coord.y {
+					return
+				}
+			}
+		case "D":
+			for i := 0; i < count; i++ {
+				y--
+				total++
+				if x == coord.x && y == coord.y {
+					return
+				}
+			}
+		case "R":
+			for i := 0; i < count; i++ {
+				x++
+				total++
+				if x == coord.x && y == coord.y {
+					return
+				}
+			}
+		case "L":
+			for i := 0; i < count; i++ {
+				x--
+				total++
+				if x == coord.x && y == coord.y {
+					return
+				}
+			}
+		}
+	}
+	return -1
 }
 
 func (g *Grid) AddWire(wire string, first bool) {
